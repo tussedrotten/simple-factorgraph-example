@@ -29,21 +29,19 @@ def factor_graph_experiment():
     L2 = L(2)
     landmark_variables = [L1, L2]
 
-    # Create noise models for the measurements.
-    prior_noise = gtsam.noiseModel.Diagonal.Sigmas(np.array([0.1, 0.1, 0.1]))
-    odometry_noise = gtsam.noiseModel.Diagonal.Sigmas(np.array([0.1, 0.1, 0.1]))
-    measurement_noise = gtsam.noiseModel.Diagonal.Sigmas(np.array([0.05, 0.1]))
-
     # Add a prior on pose X1 at the origin.
+    prior_noise = gtsam.noiseModel.Diagonal.Sigmas(np.array([0.1, 0.1, 0.1]))
     graph.add(gtsam.PriorFactorPose2(X1, gtsam.Pose2(0.0, 0.0, 0.0), prior_noise))
 
     # Add odometry factors between X1,X2 and X2,X3, respectively
+    odometry_noise = gtsam.noiseModel.Diagonal.Sigmas(np.array([0.1, 0.1, 0.1]))
     graph.add(gtsam.BetweenFactorPose2(
         X1, X2, gtsam.Pose2(2.0, 0.0, 0.0), odometry_noise))
     graph.add(gtsam.BetweenFactorPose2(
         X2, X3, gtsam.Pose2(2.0, 0.0, 0.0), odometry_noise))
 
     # Add Range-Bearing measurements to two different landmarks L1 and L2
+    measurement_noise = gtsam.noiseModel.Diagonal.Sigmas(np.array([0.05, 0.1]))
     graph.add(gtsam.BearingRangeFactor2D(
         X1, L1, gtsam.Rot2.fromDegrees(45), np.sqrt(4.0 + 4.0), measurement_noise))
     graph.add(gtsam.BearingRangeFactor2D(
