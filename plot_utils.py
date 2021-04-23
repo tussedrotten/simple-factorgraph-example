@@ -15,7 +15,9 @@ def plot_result(poses, landmarks):
     num_draws = 1000
 
     # Plot pose marginals.
-    for dist, color in zip(poses, ['lightsteelblue', 'steelblue', 'cadetblue']):
+    num_poses = len(poses)
+    pose_cmap = plt.get_cmap('autumn')
+    for dist, color in zip(poses, pose_cmap([number / num_poses for number in range(num_poses)])):
         mean_translation = dist.mean.translation()
 
         # Plot covariance from manifold.
@@ -34,7 +36,9 @@ def plot_result(poses, landmarks):
         ax.plot(mean_translation[0], mean_translation[1], marker='+', color='k', linestyle='')
 
     # Plot landmark marginals.
-    for dist, color in zip(landmarks, ['lightcoral', 'coral']):
+    num_landmarks = len(landmarks)
+    landmark_cmap = plt.get_cmap('summer')
+    for dist, color in zip(landmarks, landmark_cmap([number / num_landmarks for number in range(num_landmarks)])):
         plot_ellipse(ax, dist, fill_alpha=0.5, fill_color=color)
 
         random_points = np.random.multivariate_normal(dist.mean, dist.covariance, num_draws).T
@@ -43,7 +47,6 @@ def plot_result(poses, landmarks):
 
         ax.plot(dist.mean[0], dist.mean[1], marker='+', color='k', linestyle='')
 
-    ax.axis([-2, 7, -3, 5])
     ax.set_aspect('equal', adjustable='box')
 
     plt.show()
