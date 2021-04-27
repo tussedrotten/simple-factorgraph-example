@@ -1,4 +1,7 @@
 import warnings
+from dataclasses import dataclass
+from typing import Any
+
 import gtsam
 import numpy as np
 import visgeom as vg
@@ -9,6 +12,7 @@ import matplotlib
 
 def plot_result(poses, landmarks):
     matplotlib.use('qt5agg')
+
     plt.figure()
     ax = plt.axes()
 
@@ -111,3 +115,9 @@ def plot_ellipse(ax, dist, n=50, chi2_val=9.21, fill_alpha=0., fill_color='light
 
     ax.fill(circle_points[0, :], circle_points[1, :], alpha=fill_alpha, facecolor=fill_color)
     ax.plot(circle_points[0, :], circle_points[1, :], color=fill_color)
+
+
+@dataclass
+class MultivariateNormalParameters:
+    mean: Any
+    covariance: np.ndarray

@@ -1,20 +1,12 @@
-from dataclasses import dataclass
-from typing import Any
 import numpy as np
 import gtsam
 from gtsam.symbol_shorthand import X, L
-from plot_utils import plot_result
+from plot_utils import plot_result, MultivariateNormalParameters
 
 """Based on the example https://github.com/borglab/gtsam/blob/develop/python/gtsam/examples/PlanarSLAMExample.py"""
 
 
-@dataclass
-class MultivariateNormalParameters:
-    mean: Any
-    covariance: np.ndarray
-
-
-def factor_graph_experiment():
+def batch_factorgraph_example():
     # Create an empty nonlinear factor graph.
     graph = gtsam.NonlinearFactorGraph()
 
@@ -76,12 +68,14 @@ def factor_graph_experiment():
     for var in landmark_variables:
         landmark_marginals.append(MultivariateNormalParameters(result.atPoint2(var), marginals.marginalCovariance(var)))
 
-    # You can extract the joint marginals like this (not used further here).
-    joint_poses = marginals.jointMarginalCovariance(gtsam.KeyVector(pose_variables))
-    joint_full = marginals.jointMarginalCovariance(gtsam.KeyVector(pose_variables + landmark_variables))
+    # You can extract the joint marginals like this.
+    joint_all = marginals.jointMarginalCovariance(gtsam.KeyVector(pose_variables + landmark_variables))
+    print("Joint covariance over all variables:")
+    print(joint_all.fullMatrix())
 
+    # Plot the marginals.
     plot_result(pose_marginals, landmark_marginals)
 
 
 if __name__ == "__main__":
-    factor_graph_experiment()
+    batch_factorgraph_example()
